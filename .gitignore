@@ -1,0 +1,10 @@
+#for python
+*/ipynb_checkpoints/
+ipynb_checkpoints/
+
+#for excel
+*/.xlsx
+.xlsx
+.xlsx/
+
+
