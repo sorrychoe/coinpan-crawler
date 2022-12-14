@@ -24,7 +24,6 @@ plt.rcParams['figure.figsize'] = 10,10
 sns.set(font="Hancom MalangMalang", rc={"axes.unicode_minus":False}, style='white')
 okt = Okt()
 
-
 def word_counter(value, key_words):
     for i in value:
         if i not in key_words:
@@ -78,13 +77,14 @@ def main():
     key_words = {}
     word_lis = []
     words = []
+    
+    options = webdriver.ChromeOptions()
+    options.add_argument("headless")
+    options.add_argument('window-size=1920x1080')
 
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.implicitly_wait(5)
     
-    options = webdriver.ChromeOptions()
-    options.add_argument("headless")
-
     url = 'https://coinpan.com/index.php?mid=free&page=1'
     driver.get(url)
 
