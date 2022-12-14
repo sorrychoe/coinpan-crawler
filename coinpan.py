@@ -5,6 +5,9 @@ import json
 import urllib
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,6 +15,7 @@ import seaborn as sns
 from wordcloud import WordCloud
 import re
 from konlpy.tag import Okt
+
 import streamlit as st
 
 #set font & size
@@ -39,48 +43,23 @@ def tokenizer(text):
     return lis
 
 
+def no_space(text):
+    a = re.sub("\n", "", text)
+    b = re.sub("  ", "", a)
+    c = re.sub("[0-9]+ ", "", b)
+    return c
+
+
 def counter_to_DataFrame(key_words):
     word_df = pd.DataFrame(key_words.items()) #Data Frame 형성
     word_df.columns = ['단어', '빈도']
     word_df = word_df.sort_values(['빈도'],ascending = False).reset_index(drop = True) #내림차순 정렬
     return word_df
 
-def main():
-    st.header('코인판 키워드 분석기')
-    st.subheader('최대 100페이지까지의 키워드를 찾을 수 있습니다.')
-    iter = st.number_input('몇 페이지까지의 키워드를 확인하겠습니까?: ', 1, 100)
-    
-    key_words = {}
-    word_lis = []
 
-    for i in range(iter):
-        url = 'https://coinpan.com/index.php?mid=free&page=' + str(i)
-        
-        #딜레이 생성
-        seed = np.random.randint(100)
-        np.random.seed(seed)
-        a = np.random.randint(5)
-        time.sleep(a)
-
-        #url 호출
-        session = requests.session()
-        res = session.get(url)
-        res.raise_for_status()
-
-        #html 추출
-        soup = BeautifulSoup(res.text, 'html.parser')
-        a = soup.find_all("td", attrs = {'class':'title'}) #제목이 들어있는 태그의 텍스트 추출
-        text = str(a)
-        num = len(a)
-        words = re.compile('[가-힣]+').findall(text) #한글 제외 전부 제거
-        words = words[25:-18] #불용어 제거
-        
-        token = tokenizer(words) #토큰화
-        word_lis.append(token)
-        key_words = word_counter(token, key_words) #Counter Dict 형성
-        
+def wordcloud(key_words):
     df = counter_to_DataFrame(key_words)
-    df = df.drop([0,1,2,3]) #불용어 제거
+    df = df.drop([0,1,2]) #불용어 제거
     df = df[df['단어'].str.len() > 1]
     df.reset_index(drop=True, inplace=True)
     
@@ -88,9 +67,57 @@ def main():
                     width = 500,
                     height = 500,
                     background_color='white').generate_from_frequencies(df.set_index('단어').to_dict()['빈도'])
+    return wc
+    
+
+def main():
+    st.header('코인판 키워드 분석기')
+    st.subheader('최대 100페이지까지의 키워드를 찾을 수 있습니다.')
+    iter = st.number_input('몇 페이지까지의 키워드를 확인하겠습니까?: ', 1, 100)
+
+    key_words = {}
+    word_lis = []
+    words = []
+
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver.implicitly_wait(5)
+    
+    options = webdriver.ChromeOptions()
+    options.add_argument("headless")
+
+    url = 'https://coinpan.com/index.php?mid=free&page=1'
+    driver.get(url)
+
+
+    for i in range(3, iter + 3):
+            
+        #딜레이 생성
+        seed = np.random.randint(100)
+        np.random.seed(seed)
+        a = np.random.randint(5)
+        time.sleep(a)
+        
+        for j in range(6,26):
+            title = driver.find_element_by_css_selector(f'table > tbody > tr:nth-child({j}) > td.title > a')
+            noun = title.get_attribute('text')
+            k = no_space(noun)
+            words.append(k)
+        token = tokenizer(words)
+        key_words = word_counter(token, key_words) #Counter Dict 형성
+        
+        if i <= 7:
+            driver.find_element_by_xpath(f'//*[@id="view_198_0"]/div[2]/div/ul/li[{i}]/a').click()
+            time.sleep(3)
+        else : 
+            driver.find_element_by_xpath(f'//*[@id="view_198_0"]/div[2]/div/ul/li[8]/a').click()
+            time.sleep(3)
+
+
+    driver.quit()
 
     fig = plt.figure()
     plt.title(str(iter) +'페이지까지의 '+ 'KeyWords')
+    wc = wordcloud(key_words)
     plt.imshow(wc)
     plt.axis('off')
     plt.show()
