@@ -79,10 +79,11 @@ def main():
     words = []
     
     options = webdriver.ChromeOptions()
-    options.add_argument("headless")
-    options.add_argument('window-size=1920x1080')
+    options.add_argument("--headless")
+    options.add_argument('--window-size=1920x1080')
+    options.add_argument("--disble-gpu")
 
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
     driver.implicitly_wait(5)
     
     url = 'https://coinpan.com/index.php?mid=free&page=1'
