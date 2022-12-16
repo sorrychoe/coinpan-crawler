@@ -62,7 +62,7 @@ def wordcloud(key_words):
     df = df[df['단어'].str.len() > 1]
     df.reset_index(drop=True, inplace=True)
     
-    wc = WordCloud(font_path = 'C:\\Users\\cjsso\\AppData\\Local\\Microsoft\\Windows\\Fonts\\NanumBarunGothic.ttf',
+    wc = WordCloud(font_path = '/NanumBarunGothic.ttf',
                     width = 500,
                     height = 500,
                     background_color='white').generate_from_frequencies(df.set_index('단어').to_dict()['빈도'])
