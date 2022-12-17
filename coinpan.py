@@ -71,13 +71,14 @@ def wordcloud(key_words):
 
 def main():
     st.header('코인판 키워드 분석기')
-    st.subheader('최대 100페이지까지의 키워드를 찾을 수 있습니다.')
+    st.subheader('페이지가 너무 많을 경우, 속도가 느려집니다.')
     iter = st.number_input('몇 페이지까지의 키워드를 확인하겠습니까?: ', 1, 100)
-
-    key_words = {}
-    word_lis = []
-    words = []
     
+    
+    key_words = {}
+    token_list = []
+    words = []
+
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument('--window-size=1920x1080')
@@ -85,12 +86,14 @@ def main():
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
     driver.implicitly_wait(5)
-    
+
     url = 'https://coinpan.com/index.php?mid=free&page=1'
     driver.get(url)
 
 
     for i in range(3, iter + 3):
+        
+        word_lis = []
             
         #딜레이 생성
         seed = np.random.randint(100)
@@ -98,12 +101,17 @@ def main():
         a = np.random.randint(5)
         time.sleep(a)
         
+        
         for j in range(6,26):
-            title = driver.find_element_by_css_selector(f'table > tbody > tr:nth-child({j}) > td.title > a')
-            noun = title.get_attribute('text')
-            k = no_space(noun)
-            words.append(k)
-        token = tokenizer(words)
+            title = driver.find_element_by_css_selector(f'table > tbody > tr:nth-child({j}) > td.title > a').get_attribute('text')
+            name = driver.find_element_by_css_selector(f'table > tbody > tr:nth-child({j}) > td.author > a').get_attribute('text')
+            date = driver.find_element_by_xpath(f'//*[@id="board_list"]/table/tbody/tr[{j}]/td[4]/span').get_attribute('innerText')
+            freq = driver.find_element_by_xpath(f'//*[@id="board_list"]/table/tbody/tr[{j}]/td[5]/span').get_attribute('innerText')
+            title = no_space(title)
+            
+            words.append([title, name, date, freq])
+            word_lis.append(title)
+        token = tokenizer(word_lis) #tokenizer
         key_words = word_counter(token, key_words) #Counter Dict 형성
         
         if i <= 7:
