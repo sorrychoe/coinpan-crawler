@@ -4,16 +4,17 @@ import time
 import json
 import urllib
 import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+import re
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 from wordcloud import WordCloud
-import re
 from konlpy.tag import Okt
 
 import streamlit as st
@@ -21,7 +22,7 @@ import streamlit as st
 #set font & size
 plt.rcParams["font.family"] = "Hancom MalangMalang"
 plt.rcParams['figure.figsize'] = 10,10
-sns.set(font="Hancom MalangMalang", rc={"axes.unicode_minus":False}, style='white')
+sns.set(font="apple gothic", rc={"axes.unicode_minus":False}, style='white')
 okt = Okt()
 
 def word_counter(value, key_words):
@@ -105,8 +106,8 @@ def main():
         for j in range(6,26):
             title = driver.find_element_by_css_selector(f'table > tbody > tr:nth-child({j}) > td.title > a').get_attribute('text')
             name = driver.find_element_by_css_selector(f'table > tbody > tr:nth-child({j}) > td.author > a').get_attribute('text')
-            date = driver.find_element_by_xpath(f'//*[@id="board_list"]/table/tbody/tr[{j}]/td[4]/span').get_attribute('innerText')
-            freq = driver.find_element_by_xpath(f'//*[@id="board_list"]/table/tbody/tr[{j}]/td[5]/span').get_attribute('innerText')
+            date = driver.find_element_by_xpath(f'/table/tbody/tr[{j}]/td[4]/span').get_attribute('innerText')
+            freq = driver.find_element_by_xpath(f'/table/tbody/tr[{j}]/td[5]/span').get_attribute('innerText')
             title = no_space(title)
             
             words.append([title, name, date, freq])
@@ -115,10 +116,10 @@ def main():
         key_words = word_counter(token, key_words) #Counter Dict 형성
         
         if i <= 7:
-            driver.find_element_by_xpath(f'//*[@id="view_198_0"]/div[2]/div/ul/li[{i}]/a').click()
+            driver.find_element_by_xpath(f'/div[2]/div/ul/li[{i}]/a').click()
             time.sleep(3)
         else : 
-            driver.find_element_by_xpath(f'//*[@id="view_198_0"]/div[2]/div/ul/li[8]/a').click()
+            driver.find_element_by_xpath(f'/div[2]/div/ul/li[8]/a').click()
             time.sleep(3)
 
 
