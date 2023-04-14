@@ -124,6 +124,13 @@ def main():
 
 
     driver.quit()
+    
+    df = pd.DataFrame(words, columns=['제목', '작성자', '시간', '조회수'])
+    df.to_excel("./coinpan.xlsx")
+
+    counter = counter_to_DataFrame(key_words) #Data Frame으로 변환
+    counter = counter[counter['단어'].str.len() > 1]
+    counter.reset_index(drop=True, inplace=True)
 
     fig = plt.figure()
     plt.title(str(iter) +'페이지까지의 '+ 'KeyWords')
