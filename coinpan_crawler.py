@@ -63,7 +63,7 @@ def wordcloud(key_words):
 
 def main():
     st.header("코인판 키워드 분석기")
-    st.subheader("페이지가 너무 많을 경우, 속도가 느려집니다.")
+    st.subheader("페이지가 너무 많을 경우, 속도가 느려질 수 있습니다.")
     iter = st.number_input("몇 페이지까지의 키워드를 확인하겠습니까?: ", 1, 100)
 
     key_words = {}
