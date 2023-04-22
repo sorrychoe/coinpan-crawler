@@ -91,22 +91,22 @@ def main():
 
         for j in range(6, 26):
             title = driver.find_element(
-                [By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.title > a"]
+                By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.title > a"
             ).get_attribute("text")
             title = no_space(title)
             name = driver.find_element(
-                [By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.author > a"]
+                By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.author > a"
             ).get_attribute("text")
 
-            word_lis.append([title, name])
+            word_lis.append(title)
         token = tokenizer(word_lis)
         key_words = word_counter(token, key_words)
 
         if i <= 7:
-            driver.find_element([By.XPATH, f"/div[2]/div/ul/li[{i}]/a"]).click()
+            driver.find_element(By.XPATH, f"/div[2]/div/ul/li[{i}]/a").click()
             time.sleep(3)
         else:
-            driver.find_element([By.XPATH, f"/div[2]/div/ul/li[8]/a"]).click()
+            driver.find_element(By.XPATH, f"/div[2]/div/ul/li[8]/a").click()
             time.sleep(3)
 
     driver.quit()
