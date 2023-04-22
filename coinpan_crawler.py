@@ -1,14 +1,10 @@
-import json
 import re
 import time
-import urllib
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import requests
 import streamlit as st
-from bs4 import BeautifulSoup
 from konlpy.tag import Okt
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -23,16 +19,16 @@ okt = Okt()
 def word_counter(value, key_words):
     for i in value:
         if i not in key_words:
-            key_words[i] = 1  # 최초 언어
+            key_words[i] = 1
         elif i in key_words:
-            key_words[i] += 1  # 중복 언어
+            key_words[i] += 1
     return key_words
 
 
 def tokenizer(text):
     lis = []
     for i in text:
-        word = okt.nouns(i)  # 토큰화
+        word = okt.nouns(i)
         for k in word:
             lis.append(k)
     return lis
@@ -46,7 +42,7 @@ def no_space(text):
 
 
 def counter_to_DataFrame(key_words):
-    word_df = pd.DataFrame(key_words.items())  # Data Frame 형성
+    word_df = pd.DataFrame(key_words.items())
     word_df.columns = ["단어", "빈도"]
     word_df = word_df.sort_values(["빈도"], ascending=False).reset_index(drop=True)  # 내림차순 정렬
     return word_df
@@ -58,9 +54,9 @@ def wordcloud(key_words):
     df = df[df["단어"].str.len() > 1]
     df.reset_index(drop=True, inplace=True)
 
-    wc = WordCloud(
-        font_path="/NanumBarunGothic.ttf", width=500, height=500, background_color="white"
-    ).generate_from_frequencies(df.set_index("단어").to_dict()["빈도"])
+    wc = WordCloud(font_path="Apple Gothic", width=500, height=500, background_color="white").generate_from_frequencies(
+        df.set_index("단어").to_dict()["빈도"]
+    )
     return wc
 
 

@@ -19,7 +19,7 @@ repos:
         pass_filenames: true
         entry: isort
         args:
-          - --config=pyproject.toml
+          - --settings-file=.isort.cfg
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
