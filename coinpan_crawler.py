@@ -1,5 +1,3 @@
-##module import 
-
 import time
 import json
 import urllib
@@ -20,9 +18,8 @@ from konlpy.tag import Okt
 import streamlit as st
 
 #set font & size
-plt.rcParams["font.family"] = "Hancom MalangMalang"
+plt.rcParams["font.family"] = "Apple Gothic"
 plt.rcParams['figure.figsize'] = 10,10
-sns.set(font="apple gothic", rc={"axes.unicode_minus":False}, style='white')
 okt = Okt()
 
 def word_counter(value, key_words):
@@ -77,7 +74,6 @@ def main():
     
     
     key_words = {}
-    token_list = []
     words = []
 
     options = webdriver.ChromeOptions()

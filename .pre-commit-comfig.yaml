@@ -1,0 +1,31 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_stages: [commit]
+repos:
+  - repo: local
+    hooks:
+      - id: format-black
+        name: Format with black
+        language: system
+        types: [file, python, text]
+        pass_filenames: true
+        entry: black
+        args:
+          - --config=pyproject.toml
+      - id: format-isort
+        name: Format with isort
+        language: system
+        types: [file, python, text]
+        pass_filenames: true
+        entry: isort
+        args:
+          - --config=pyproject.toml
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: requirements-txt-fixer

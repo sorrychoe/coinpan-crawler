@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "coinpan crawler"
+description = "web page crawler getting data from the coinpan website"
+authors = ["cjssoote@gmail.com"]
+
+[tool.poetry.dependencies]
+black = ">=19.3b0,<=22.12"
+isort = ">=5.7"
+pre-commit = ">=2.13"
+pylint = ">=2.9"
+python = ">=3.8"
+selenium = ">=4.0"
+webdriver-manager = ">=3.8"
+urllib3 = "1.26.15"
+chromedriver-autoinstaller = "0.4.0"
+streamlit = "1.21.0"
+wordcloud = ">=1.8"
+requests = "2.28.2"
+numpy = ">=1.24"
+pandas = "1.5.3"
+matplotlib = ">=3.7"
+
+[tool.black]
+line-length = 120
+target-version = ['py39']
+
+[tool.isort]
+multi_line_output = 3
+skip_gitignore=True
+skip_glob=['*/__init__.py']
