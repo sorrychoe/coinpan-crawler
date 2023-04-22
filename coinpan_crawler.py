@@ -67,7 +67,6 @@ def main():
     iter = st.number_input("몇 페이지까지의 키워드를 확인하겠습니까?: ", 1, 100)
 
     key_words = {}
-    words = []
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
