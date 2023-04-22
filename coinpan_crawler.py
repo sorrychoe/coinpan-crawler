@@ -7,6 +7,7 @@ import pandas as pd
 import streamlit as st
 from konlpy.tag import Okt
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from wordcloud import WordCloud
 
@@ -90,34 +91,28 @@ def main():
         time.sleep(a)
 
         for j in range(6, 26):
-            title = driver.find_element_by_css_selector(
-                f"table > tbody > tr:nth-child({j}) > td.title > a"
+            title = driver.find_element(
+                [By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.title > a"]
             ).get_attribute("text")
-            name = driver.find_element_by_css_selector(
-                f"table > tbody > tr:nth-child({j}) > td.author > a"
-            ).get_attribute("text")
-            date = driver.find_element_by_xpath(f"/table/tbody/tr[{j}]/td[4]/span").get_attribute("innerText")
-            freq = driver.find_element_by_xpath(f"/table/tbody/tr[{j}]/td[5]/span").get_attribute("innerText")
             title = no_space(title)
+            name = driver.find_element(
+                [By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.author > a"]
+            ).get_attribute("text")
 
-            words.append([title, name, date, freq])
-            word_lis.append(title)
-        token = tokenizer(word_lis)  # tokenizer
-        key_words = word_counter(token, key_words)  # Counter Dict 형성
+            word_lis.append([title, name])
+        token = tokenizer(word_lis)
+        key_words = word_counter(token, key_words)
 
         if i <= 7:
-            driver.find_element_by_xpath(f"/div[2]/div/ul/li[{i}]/a").click()
+            driver.find_element([By.XPATH, f"/div[2]/div/ul/li[{i}]/a"]).click()
             time.sleep(3)
         else:
-            driver.find_element_by_xpath(f"/div[2]/div/ul/li[8]/a").click()
+            driver.find_element([By.XPATH, f"/div[2]/div/ul/li[8]/a"]).click()
             time.sleep(3)
 
     driver.quit()
 
-    df = pd.DataFrame(words, columns=["제목", "작성자", "시간", "조회수"])
-    df.to_excel("./coinpan.xlsx")
-
-    counter = counter_to_DataFrame(key_words)  # Data Frame으로 변환
+    counter = counter_to_DataFrame(key_words)
     counter = counter[counter["단어"].str.len() > 1]
     counter.reset_index(drop=True, inplace=True)
 
