@@ -23,8 +23,3 @@ matplotlib = ">=3.7"
 [tool.black]
 line-length = 120
 target-version = ['py39']
-
-[tool.isort]
-multi_line_output = 3
-skip_gitignore=True
-skip_glob=['*/__init__.py']
