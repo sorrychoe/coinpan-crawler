@@ -1,6 +1,6 @@
 black >=19.3b0,<=22.12
-chromedriver-autoinstaller == 0.4.0
 isort >=5.7
+konlpy == 0.6.0
 matplotlib >=3.7
 numpy >=1.24
 pandas == 1.5.3
