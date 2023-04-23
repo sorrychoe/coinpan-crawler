@@ -1,6 +1,7 @@
 import re
 import time
 
+import chromedriver_autoinstaller
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -8,7 +9,6 @@ import streamlit as st
 from konlpy.tag import Okt
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from wordcloud import WordCloud
 
 # set font & size
@@ -69,9 +69,9 @@ def main():
     key_words = {}
 
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--window-size=1920x1080")
-    options.add_argument("--disble-gpu")
+    # options.add_argument("--headless")
+    # options.add_argument("--window-size=1920x1080")
+    # options.add_argument("--disble-gpu")
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
     driver.implicitly_wait(5)
