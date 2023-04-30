@@ -1,6 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-default_stages: [commit]
+default_stages: [push]
 repos:
   - repo: local
     hooks:
@@ -20,6 +20,14 @@ repos:
         entry: isort
         args:
           - --settings-file=pyproject.toml
+      - id: lint-flake8
+        name: Lint with flake8
+        language: system
+        types: [file, python, text]
+        pass_filenames: true
+        entry: flake8
+        args:
+          - --config=.flake8
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
