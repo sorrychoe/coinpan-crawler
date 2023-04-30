@@ -14,12 +14,18 @@ webdriver-manager = ">=3.8"
 urllib3 = "1.26.15"
 chromedriver-autoinstaller = "0.4.0"
 streamlit = "1.21.0"
-wordcloud = ">=1.8"
 numpy = ">=1.24"
 pandas = "1.5.3"
-matplotlib = ">=3.7"
-konlpy = "0.6.0"
 
 [tool.black]
-line-length = 120
-target-version = ['py39']
+line-length = 110
+
+[tool.isort]
+profile="black"
+multi_line_output = 3
+include_trailing_comma = "True"
+force_grid_wrap = 0
+use_parentheses = "True"
+ensure_newline_before_comments = "True"
+line_length = 110
+skip_gitignore = "True"

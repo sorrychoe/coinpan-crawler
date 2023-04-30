@@ -1,15 +1,12 @@
 import re
 import time
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import streamlit as st
-from konlpy.tag import Okt
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
-from wordcloud import WordCloud
 
 # set font & size
 plt.rcParams["font.family"] = "Hancom MalangMalang"
@@ -63,22 +60,26 @@ def main():
         time.sleep(a)
 
         for j in range(6, 26):
-            title = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.title > a").get_attribute("text")
+            title = driver.find_elements(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.title > a").get_attribute(
+                "text"
+            )
 
-            name = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.author > a").get_attribute("text")
+            name = driver.find_elements(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.author > a").get_attribute(
+                "text"
+            )
 
-            date = driver.find_element(
+            date = driver.find_elements(
                 By.CSS_SELECTOR, f"tr:nth-child({j}) > td.time > span.regdateHour"
             ).get_attribute("innerText")
 
-            freq = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.readed > span.number").get_attribute(
-                "innerText"
-            )
+            freq = driver.find_elements(
+                By.CSS_SELECTOR, f"tr:nth-child({j}) > td.readed > span.number"
+            ).get_attribute("innerText")
 
-            driver.find_element(By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.title > a").click()
+            driver.find_elements(By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.title > a").click()
 
             if text_checker(text_tag):
-                context = driver.find_element(By.CSS_SELECTOR, text_tag).get_attribute("text")
+                context = driver.find_elements(By.CSS_SELECTOR, text_tag).get_attribute("text")
             else:
                 context = " "
             driver.back()
@@ -88,11 +89,15 @@ def main():
             words.append([title, name, context])
 
         if i <= 7:
-            driver.find_element(By.CSS_SELECTOR, f"div.section_footer > div > ul > li:nth-child({i}) > a").click()
+            driver.find_elements(
+                By.CSS_SELECTOR, f"div.section_footer > div > ul > li:nth-child({i}) > a"
+            ).click()
             time.sleep(3)
 
         else:
-            driver.find_element(By.CSS_SELECTOR, f"div.section_footer > div > ul > li:nth-child(8) > a").click()
+            driver.find_elements(
+                By.CSS_SELECTOR, f"div.section_footer > div > ul > li:nth-child(8) > a"
+            ).click()
             time.sleep(3)
 
     driver.quit()
