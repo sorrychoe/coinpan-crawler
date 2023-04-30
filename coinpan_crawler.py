@@ -24,9 +24,12 @@ def parsing_keywords(text):
 
 
 def main():
-    st.header("코인판 키워드 분석기")
-    iter = st.number_input("몇 페이지까지의 키워드를 확인하겠습니까?: ", 1, 100)
-    time.sleep(10)
+    st.header("코인판 크롤러")
+    iter = st.number_input("몇 페이지까지의 데이터를 추출하시겠습니까?: ", 1, 100)
+    time.sleep(30)
+    message_bar = st.empty()
+
+    message_bar.text(f"{iter} 페이지까지의 키워드를 추출하고 있습니다.")
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -35,8 +38,6 @@ def main():
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
     driver.implicitly_wait(5)
-
-    iter = 1
 
     url = "https://coinpan.com/index.php?mid=free&page=1"
     driver.get(url)
@@ -65,17 +66,20 @@ def main():
             a = np.random.randint(5)
             time.sleep(a)
 
-            if text_checker(text_tag, driver):
-                ptags = driver.find_elements(By.CSS_SELECTOR, text_tag)
-                contexts = ""
-                for k in range(len(ptags)):
-                    texts = f"div.board_read.rd > div.section_wrap.section_border_0 > div > div > p:nth-child({k+1})"
-                    context = driver.find_element(By.CSS_SELECTOR, texts).text
-                    context = parsing_keywords(context)
-                    contexts = contexts + " " + context
+            ptags = driver.find_elements(By.CSS_SELECTOR, text_tag)
+            contexts = ""
+            try:
+                if ptags != 0:
+                    for k in range(len(ptags)):
+                        texts = f"div.board_read.rd > div.section_wrap.section_border_0 > div > div > p:nth-child({k+1})"
+                        context = driver.find_element(By.CSS_SELECTOR, texts).text
+                        context = parsing_keywords(context)
+                        contexts = contexts + " " + context
 
-            else:
-                contexts = ""
+                else:
+                    pass
+            except BaseException:
+                pass
             driver.back()
 
             title = parsing_keywords(title)
@@ -89,18 +93,17 @@ def main():
 
         else:
             driver.find_element(
-                By.CSS_SELECTOR, f"div.section_footer > div > ul > li:nth-child(8) > a"
+                By.CSS_SELECTOR, "div.section_footer > div > ul > li:nth-child(8) > a"
             ).click()
             time.sleep(3)
 
     driver.quit()
 
     df = pd.DataFrame(words, columns=["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]).drop_duplicates(subset=["제목"])
+    data = df.to_csv().encode("utf-8")
 
-    try:
-        driver.quit()
-    except WebDriverException:
-        st.download_button(label="파일을 다운로드해주세요.", data=data, file_name="coinpan.xlsx")
+    message_bar.empty()
+    message_bar.download_button(label="파일을 다운로드하세요.", data=data, file_name="coinpan.csv", mime="text/csv")
 
 
 if __name__ == "__main__":
