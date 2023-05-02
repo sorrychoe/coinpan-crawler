@@ -19,6 +19,7 @@ pandas = "1.5.3"
 
 [tool.black]
 line-length = 110
+target-version = ['py39']
 
 [tool.isort]
 profile="black"
