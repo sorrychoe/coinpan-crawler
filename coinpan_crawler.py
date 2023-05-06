@@ -53,7 +53,8 @@ def main():
             name = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.author > a").text
 
             date = driver.find_element(
-                By.CSS_SELECTOR, f"tr:nth-child({j}) > td.time > span.number > span.regdateHour"
+                By.CSS_SELECTOR,
+                f"tr:nth-child({j}) > td.time > span.number > span.regdateHour",
             ).text
 
             freq = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.readed > span.number").text
@@ -87,13 +88,15 @@ def main():
 
         if i <= 7:
             driver.find_element(
-                By.CSS_SELECTOR, f"div.section_footer > div > ul > li:nth-child({i}) > a"
+                By.CSS_SELECTOR,
+                f"div.section_footer > div > ul > li:nth-child({i}) > a",
             ).click()
             time.sleep(3)
 
         else:
             driver.find_element(
-                By.CSS_SELECTOR, "div.section_footer > div > ul > li:nth-child(8) > a"
+                By.CSS_SELECTOR,
+                "div.section_footer > div > ul > li:nth-child(8) > a",
             ).click()
             time.sleep(3)
 
