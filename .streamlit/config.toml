@@ -1,2 +1,4 @@
 [theme]
 base="dark"
+textColor = "#F9FFFF"
+font = "Apple Gothic"
