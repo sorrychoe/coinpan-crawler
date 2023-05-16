@@ -4,30 +4,19 @@ default_stages: [commit]
 repos:
   - repo: local
     hooks:
-      - id: format-black
-        name: Format with black
+      - id: format
+        name: format
         language: system
-        types: [file, python, text]
-        pass_filenames: true
-        entry: black
-        args:
-          - --config=pyproject.toml
-      - id: format-isort
-        name: Format with isort
+        entry: make format
+        types: [python]
+
+  - repo: local
+    hooks:
+      - id: lint
+        name: lint
         language: system
-        types: [file, python, text]
-        pass_filenames: true
-        entry: isort
-        args:
-          - --settings-file=pyproject.toml
-      - id: lint-flake8
-        name: Lint with flake8
-        language: system
-        types: [file, python, text]
-        pass_filenames: true
-        entry: flake8
-        args:
-          - --config=.flake8
+        entry: make lint
+        types: [python]
   - repo: https://github.com/asottile/reorder_python_imports
     rev: v3.9.0
     hooks:
