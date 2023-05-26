@@ -1,4 +1,4 @@
-.PHONY: install format lint data clear
+.PHONY: install format data clear
 
 NAME = coinpan_crawler
 
@@ -11,19 +11,16 @@ endif
 
 all:
 	@echo 'coinpan_crawler'
-	@echo "코인판 사이트 자유게시판 크롤러"
 
 install:
-	$(python) -m pip install --upgrade pip
-	$(python) -m pip install -r requirements.txt
-	$(python) -m pre_commit install
+	$(python) -m pip install $(pip_user_option) --upgrade pip \
+	$(python) -m pip install $(pip_user_option) --upgrade 'build>=0.7' 'setuptools>=61.0,<64.0' 'wheel>=0.37' \
+	$(python) -m pip install $(pip_user_option) -r requirements.txt \
+	pre-commit install
 
 format:
-	$(python) -m black --config=pyproject.toml coinpan_crawler/
-	$(python) -m isort --settings-file=pyproject.toml coinpan_crawler/
-
-lint:
-	$(python) -m flake8 --config=.flake8 coinpan_crawler/
+	$(python) -m isort --settings-file=setup.cfg coinpan_crawler/
+	$(python) -m flake8 --config=setup.cfg coinpan_crawler/
 
 data:
 	@streamlit run ./coinpan_crawler/coinpan_crawler.py

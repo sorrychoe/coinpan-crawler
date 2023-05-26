@@ -10,14 +10,6 @@ repos:
         entry: make format
         types: [python]
 
-  - repo: local
-    hooks:
-      - id: lint
-        name: lint
-        language: system
-        entry: make lint
-        types: [python]
-
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v2.4.0
     hooks:
@@ -28,6 +20,5 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-case-conflict
-      - id: check-toml
       - id: check-yaml
       - id: requirements-txt-fixer
