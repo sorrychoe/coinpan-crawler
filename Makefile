@@ -19,11 +19,11 @@ install:
 	pre-commit install
 
 format:
-	$(python) -m isort --settings-file=setup.cfg coinpan_crawler/
-	$(python) -m flake8 --config=setup.cfg coinpan_crawler/
+	$(python) -m isort --settings-file=setup.cfg coinpan_crawler.py
+	$(python) -m flake8 --config=setup.cfg coinpan_crawler.py
 
 data:
-	@streamlit run ./coinpan_crawler/coinpan_crawler.py
+	@streamlit run coinpan_crawler.py
 
 clear:
 	@rm -fr **/__pycache__ *.xlsx
