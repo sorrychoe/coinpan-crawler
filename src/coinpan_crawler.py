@@ -1,7 +1,6 @@
 import re
-import time
+from time import sleep
 
-import numpy as np
 import pandas as pd
 import streamlit as st
 from selenium import webdriver
@@ -24,12 +23,9 @@ def parsing_keywords(text):
 
 
 def main():
-    st.header("코인판 크롤러")
-    iter = st.number_input("몇 페이지까지의 데이터를 추출하시겠습니까?: ", 1, 100)
-    time.sleep(30)
-    message_bar = st.empty()
-
-    message_bar.text(f"{iter} 페이지까지의 키워드를 추출하고 있습니다.")
+    st.header("Coinpan Crawler")
+    iter = st.number_input("몇 페이지까지의 데이터를 추출하시겠습니까?: ", 1, 10)
+    sleep(30)
 
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -42,30 +38,31 @@ def main():
     url = "https://coinpan.com/index.php?mid=free&page=1"
     driver.get(url)
 
-    words = []
+    data = []
+
     text_tag = "div.board_read.rd > div.section_wrap.section_border_0 > div > div > p"
 
     for i in range(3, iter + 3):
+        message_bar = st.empty()
+        message_bar.text(f"{i-2} 페이지의 키워드를 추출하고 있습니다.")
 
         for j in range(6, 26):
+            words = {}
             title = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.title > a").text
+            words["title"] = parsing_keywords(title)
 
-            name = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.author > a").text
+            words["name"] = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.author > a").text
 
-            date = driver.find_element(
+            words["date"] = driver.find_element(
                 By.CSS_SELECTOR,
                 f"tr:nth-child({j}) > td.time > span.number > span.regdateHour",
             ).text
 
-            freq = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.readed > span.number").text
+            words["freq"] = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.readed > span.number").text
 
             driver.find_element(By.CSS_SELECTOR, f"table > tbody > tr:nth-child({j}) > td.title > a").click()
 
-            # delaying
-            seed = np.random.randint(100)
-            np.random.seed(seed)
-            a = np.random.randint(5)
-            time.sleep(a)
+            sleep(3)
 
             ptags = driver.find_elements(By.CSS_SELECTOR, text_tag)
             contexts = ""
@@ -76,6 +73,7 @@ def main():
                         context = driver.find_element(By.CSS_SELECTOR, texts).text
                         context = parsing_keywords(context)
                         contexts = contexts + " " + context
+                    words["contexts"] = contexts
 
                 else:
                     pass
@@ -83,30 +81,30 @@ def main():
                 pass
             driver.back()
 
-            title = parsing_keywords(title)
-            words.append([title, name, date, freq, contexts])
+            data.append(words)
 
         if i <= 7:
             driver.find_element(
                 By.CSS_SELECTOR,
                 f"div.section_footer > div > ul > li:nth-child({i}) > a",
             ).click()
-            time.sleep(3)
+            sleep(3)
 
         else:
             driver.find_element(
                 By.CSS_SELECTOR,
                 "div.section_footer > div > ul > li:nth-child(8) > a",
             ).click()
-            time.sleep(3)
+            sleep(3)
 
     driver.quit()
 
-    df = pd.DataFrame(words, columns=["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]).drop_duplicates(subset=["제목"])
-    data = df.to_csv().encode("utf-8")
+    df = pd.DataFrame.from_dict(data).drop_duplicates(subset=["제목"])
+    df.columns = ["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]
+    csv = df.to_csv().encode("utf-8")
 
     message_bar.empty()
-    message_bar.download_button(label="파일을 다운로드하세요.", data=data, file_name="coinpan.csv", mime="text/csv")
+    message_bar.download_button(label="파일을 다운로드하세요.", data=csv, file_name="coinpan.csv", mime="text/csv")
 
 
 if __name__ == "__main__":
