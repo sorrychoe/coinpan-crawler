@@ -99,8 +99,9 @@ def main():
 
     driver.quit()
 
-    df = pd.DataFrame.from_dict(data).drop_duplicates(subset=["제목"])
+    df = pd.DataFrame.from_dict(data)
     df.columns = ["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]
+    df.drop_duplicates(subset=["제목"], inplace=True)
     csv = df.to_csv().encode("utf-8")
 
     message_bar.empty()
