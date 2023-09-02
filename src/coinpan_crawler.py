@@ -53,15 +53,21 @@ def main():
     url = "https://coinpan.com/index.php?mid=free&page=1"
     driver.get(url)
 
-    iter = 1
     data = []
 
     text_tag = "div.board_read.rd > div.section_wrap.section_border_0 > div > div > p"
+    print(" ")
+    print("\033[96m" + "코인판 크롤러 작동을 시작합니다." + "\033[0m")
+    print(" ")
+    sleep(3)
+    iter = int(input("몇 페이지까지의 키워드를 추출하길 원하시나요? >> "))
 
     for i in range(3, iter + 3):
+        print(" ")
         print("\033[32m" + f"{i-2} 페이지의 키워드를 추출하고 있습니다." + "\033[0m")
 
         for j in range(6, 26):
+            print(" ")
             print("\033[96m" + "================crawling 진행 중==============" + "\033[0m")
             words = {}
             title = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.title > a").text
