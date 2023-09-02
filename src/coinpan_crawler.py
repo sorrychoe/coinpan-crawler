@@ -1,11 +1,13 @@
+import os
 import re
+from datetime import datetime
 from time import sleep
 
+import chromedriver_autoinstaller
 import pandas as pd
-import streamlit as st
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 
 
 def text_checker(tag, driver):
@@ -22,31 +24,45 @@ def parsing_keywords(text):
     return no_nbsp
 
 
+def get_data(data):
+    now = datetime.today().strftime("%Y%m%d")
+    df = pd.DataFrame.from_dict(data)
+    df.columns = ["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]
+    df.drop_duplicates(subset=["제목"], inplace=True)
+    df.to_csv(f"coinpan_{now}.csv", encoding="utf-8-sig")
+
+
 def main():
-    st.header("Coinpan Crawler")
-    iter = st.number_input("몇 페이지까지의 데이터를 추출하시겠습니까?: ", 1, 10)
-    sleep(30)
+    chrome_ver = chromedriver_autoinstaller.get_chrome_version().split(".")[0]
+    driver_path = f"./{chrome_ver}/chromedriver"
+    if os.path.exists(driver_path):
+        print(f"chrome driver is installed: {driver_path}")
+    else:
+        print(f"install the chrome driver(ver: {chrome_ver})")
+        chromedriver_autoinstaller.install(True)
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--window-size=1920x1080")
-    options.add_argument("--disble-gpu")
+    chrome_options = Options()
+    chrome_options.add_experimental_option("prefs", {"download.default_directory": os.getcwd()})
 
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
-    driver.implicitly_wait(5)
+    options = ["--headless", "--no-sandbox"]
+    for option in options:
+        chrome_options.add_argument(option)
+
+    driver = webdriver.Chrome(options=chrome_options)
 
     url = "https://coinpan.com/index.php?mid=free&page=1"
     driver.get(url)
 
+    iter = 1
     data = []
 
     text_tag = "div.board_read.rd > div.section_wrap.section_border_0 > div > div > p"
 
     for i in range(3, iter + 3):
-        message_bar = st.empty()
-        message_bar.text(f"{i-2} 페이지의 키워드를 추출하고 있습니다.")
+        print("\033[32m" + f"{i-2} 페이지의 키워드를 추출하고 있습니다." + "\033[0m")
 
         for j in range(6, 26):
+            print("\033[96m" + "================crawling 진행 중==============" + "\033[0m")
             words = {}
             title = driver.find_element(By.CSS_SELECTOR, f"tr:nth-child({j}) > td.title > a").text
             words["title"] = parsing_keywords(title)
@@ -98,14 +114,7 @@ def main():
             sleep(3)
 
     driver.quit()
-
-    df = pd.DataFrame.from_dict(data)
-    df.columns = ["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]
-    df.drop_duplicates(subset=["제목"], inplace=True)
-    csv = df.to_csv().encode("utf-8")
-
-    message_bar.empty()
-    message_bar.download_button(label="파일을 다운로드하세요.", data=csv, file_name="coinpan.csv", mime="text/csv")
+    get_data(data)
 
 
 if __name__ == "__main__":

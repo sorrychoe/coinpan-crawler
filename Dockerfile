@@ -10,4 +10,4 @@ RUN pip install --upgrade pip \
 	pip install -r requirements.txt \
 	pre-commit install
 
-CMD ["streamlit", "run", "src/coinpan_crawler.py"]
+CMD ["python", "src/coinpan_crawler.py"]

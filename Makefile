@@ -23,7 +23,7 @@ format:
 	$(python) -m flake8 --config=setup.cfg src/
 
 data:
-	@streamlit run src/coinpan_crawler.py
+	$(python) src/coinpan_crawler.py
 
 clear:
 	@rm -fr **/__pycache__ *.xlsx
