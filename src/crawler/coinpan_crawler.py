@@ -24,15 +24,15 @@ def parsing_keywords(text):
     return no_nbsp
 
 
-def get_data(data):
+def data_to_csv(data):
     now = datetime.today().strftime("%Y%m%d")
     df = pd.DataFrame.from_dict(data)
     df.columns = ["제목", "작성자", "업로드_일자", "조회수", "게시글_내용"]
     df.drop_duplicates(subset=["제목"], inplace=True)
-    df.to_csv(f"coinpan_{now}.csv", encoding="utf-8-sig")
+    df.to_csv(f"src/data/coinpan_{now}.csv", encoding="utf-8-sig")
 
 
-def main():
+def get_driver():
     chrome_ver = chromedriver_autoinstaller.get_chrome_version().split(".")[0]
     driver_path = f"./{chrome_ver}/chromedriver"
     if os.path.exists(driver_path):
@@ -49,7 +49,11 @@ def main():
         chrome_options.add_argument(option)
 
     driver = webdriver.Chrome(options=chrome_options)
+    return driver
 
+
+def main():
+    driver = get_driver()
     url = "https://coinpan.com/index.php?mid=free&page=1"
     driver.get(url)
 
@@ -120,7 +124,7 @@ def main():
             sleep(3)
 
     driver.quit()
-    get_data(data)
+    data_to_csv(data)
 
 
 if __name__ == "__main__":

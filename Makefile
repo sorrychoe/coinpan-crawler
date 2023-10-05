@@ -1,5 +1,5 @@
-.PHONY: install format data clear
-
+.PHONY: install format crawling clear
+\
 NAME = coinpan_crawler
 
 SHELL := bash
@@ -22,8 +22,14 @@ format:
 	$(python) -m isort --settings-file=setup.cfg src/
 	$(python) -m flake8 --config=setup.cfg src/
 
-data:
-	$(python) src/coinpan_crawler.py
+crawling:
+	$(python) src/crawler/coinpan_crawler.py
+
+dashboard:
+	$(python) src/main.py
 
 clear:
-	@rm -fr **/__pycache__ *.xlsx
+	@rm -fr src/**/__pycache__
+
+reset:
+	@rm -fr src/data/*.csv
