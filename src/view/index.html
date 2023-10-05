@@ -37,12 +37,12 @@
 <body>
     <div class="dashboard">
         <div class="chart-container">
-            <h2>Bar Chart</h2>
+            <h2>게시글 작성자 순위</h2>
             <div id="bar-chart">
             </div>
         </div>
         <div class="chart-container">
-            <h2>Word Cloud</h2>
+            <h2>주요 등장 단어</h2>
             <div id="word-cloud" style="width:100%; height:70%;">
             </div>
         </div>
@@ -64,7 +64,6 @@
                 };
 
                 var layout = {
-                title: '게시글 작성자 순위',
                 xaxis: {
                     title: '이름'
                 },
@@ -89,10 +88,10 @@
                     a["value"]  = data["frequent"][i];
                     words.push(a);
                     };
-            var chart = anychart.tagCloud(words);
-            chart.angles([0]);
-            chart.container("word-cloud");
-            chart.draw();
+                var chart = anychart.tagCloud(words);
+                chart.angles([0]);
+                chart.container("word-cloud");
+                chart.draw();
             })});
     </script>
     </div>
