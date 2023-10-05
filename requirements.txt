@@ -1,12 +1,13 @@
-black >=19.3b0,<=22.12
-fastapi == 0.103.1
+black>=19.3b0,<=22.12
+fastapi==0.103.1
 flake8==6.0.0
-isort >=5.7
-numpy ==1.24
-pandas == 1.5.3
-pre-commit >=2.13
-selenium >=4.0
-streamlit == 1.21.0
-urllib3 == 1.26.15
-uvicorn == 0.23.2
-webdriver-manager >=3.8
+isort>=5.7
+Jinja2==3.1.2
+konlpy==0.6.0
+numpy==1.24
+pandas==1.5.3
+pre-commit>=2.13
+selenium>=4.0
+urllib3==1.26.15
+uvicorn==0.23.2
+webdriver-manager>=3.8
