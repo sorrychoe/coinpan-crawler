@@ -161,3 +161,6 @@ cython_debug/
 
 # chromedriver
 chromedriver.exe
+
+# data file
+*.csv
