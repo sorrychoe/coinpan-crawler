@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>coinpan-dashboard</title>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
     <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,37 +52,40 @@
         <script>
             fetch('http://localhost:8000/names')
             .then(response => response.json())
-            .then(data => {
-                var trace = {
-                type: 'bar',
-                x: Object.values(data["name"]),
-                y: Object.values(data["frequent"]),
-                marker: {
-                    color: 'rgba(75, 192, 192, 0.6)',
-                    line: {
-                    color: 'rgba(75, 192, 192, 1)',
-                    width: 1
-                    }
-                }
-                };
+            .then(data =>{
+            anychart.onDocumentReady(function() {
+                anychart.theme('darkBlue');
+                let names = [];
+                for (let k in data["name"]){
+                    let b = {};
+                    if (data["frequent"][k]>=2){
+                        b["x"] = data["name"][k];
+                        b["value"]  = data["frequent"][k];
+                        names.push(b);
+                    }};
+                names.sort(function (First, Second) {
+                    return Second["value"] - First["value"];
+                });
+                var chart = anychart.bar();
+                chart.animation(true);
+                chart.padding([10, 40, 5, 20]);
+                var series = chart.bar(names);
+                series
+                    .tooltip()
+                    .position('right')
+                    .anchor('left-center')
+                    .offsetX(5)
+                    .offsetY(0)
 
-                var layout = {
-                xaxis: {
-                    title: '이름'
-                },
-                yaxis: {
-                    title: '빈도',
-                    rangemode: 'tozero'
-                }
-                };
-                Plotly.newPlot('bar-chart', [trace], layout);
-            });
-        </script>
+                chart.container("bar-chart");
+                chart.draw();
+            })});
+    </script>
         <script>
             fetch('http://localhost:8000/words')
             .then(response => response.json())
             .then(data =>{
-            anychart.onDocumentReady(function () {
+            anychart.onDocumentReady(function() {
                 let words = [];
                 for (let i in data["words"]){
                     let a = {};
