@@ -11,3 +11,4 @@ selenium>=4.0
 urllib3==1.26.15
 uvicorn==0.23.2
 webdriver-manager>=3.8
+chromedriver-autoinstaller>=0.6.0
